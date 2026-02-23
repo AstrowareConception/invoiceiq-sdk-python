@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "invoiceiq-sdk"
+version = "0.1.0"
+description = "SDK Python pour l'API InvoiceIQ (Factur-X)"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio",
+    "respx",
+]
