@@ -16,6 +16,15 @@ def make_meta() -> TransformationMetadata:
         issueDate="2024-02-22",
         seller=Party(name="Seller", countryCode="FR", address=Address(line1="rue A", city="Paris", postCode="75001", countryCode="FR")),
         buyer=Party(name="Buyer", countryCode="FR", address=Address(line1="rue B", city="Lyon", postCode="69001", countryCode="FR")),
+        lines=[
+            {
+                "id": "1",
+                "name": "Service",
+                "quantity": 1,
+                "netPrice": 100.0,
+                "totalAmount": 100.0
+            }
+        ],
         totalTaxExclusiveAmount=100.0,
         taxTotalAmount=20.0,
         totalTaxInclusiveAmount=120.0,

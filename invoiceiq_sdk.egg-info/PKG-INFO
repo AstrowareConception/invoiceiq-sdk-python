@@ -1,3 +1,16 @@
+Metadata-Version: 2.4
+Name: invoiceiq-sdk
+Version: 0.1.0
+Summary: SDK Python pour l'API InvoiceIQ (Factur-X)
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: pydantic>=2.0.0
+Provides-Extra: test
+Requires-Dist: pytest>=7.0.0; extra == "test"
+Requires-Dist: pytest-asyncio; extra == "test"
+Requires-Dist: respx; extra == "test"
+
 # invoiceiq-sdk-python
 
 SDK Python pratique pour l'API InvoiceIQ (Factur-X): validations, transformations PDF→Factur‑X et génération complète. Inclut des modèles Pydantic, un client HTTP et des helpers de polling.
@@ -12,7 +25,7 @@ pip install -e .[test]
 
 ```python
 from invoiceiq import InvoiceIQClient
-from invoiceiq.models import TransformationMetadata, Party, Address, InvoiceLine
+from invoiceiq.models import TransformationMetadata, Party, Address
 
 client = InvoiceIQClient(api_key="YOUR_API_KEY")
 
@@ -26,9 +39,6 @@ meta = TransformationMetadata(
     issueDate="2024-02-22",
     seller=Party(name="Seller", countryCode="FR", address=Address(line1="10 rue A", city="Paris", postCode="75001", countryCode="FR")),
     buyer=Party(name="Buyer", countryCode="FR", address=Address(line1="5 rue B", city="Lyon", postCode="69001", countryCode="FR")),
-    lines=[
-        InvoiceLine(name="Service", quantity=1, netPrice=100.0, totalAmount=100.0)
-    ],
     totalTaxExclusiveAmount=100.0,
     taxTotalAmount=20.0,
     totalTaxInclusiveAmount=120.0,
@@ -42,19 +52,7 @@ final_job = client.wait_for_job(client.get_transformation, job_id=job.get("id"))
 print(final_job)
 
 # 3) Générer une facture complète (PDF + XML)
-from invoiceiq.models import GenerationPayload, PartyDetail, GenerationInvoiceLine
-payload = GenerationPayload(
-    invoiceNumber="INV-2024-42",
-    issueDate="2024-02-22",
-    seller=PartyDetail(name="Seller", countryCode="FR", addressLine1="10 rue A", city="Paris", postCode="75001"),
-    buyer=PartyDetail(name="Buyer", countryCode="FR", addressLine1="5 rue B", city="Lyon", postCode="69001"),
-    lines=[
-        GenerationInvoiceLine(name="Service", quantity=1, unitPrice=100.0, totalAmount=100.0)
-    ],
-    totalTaxExclusiveAmount=100.0,
-    taxTotalAmount=20.0,
-    totalTaxInclusiveAmount=120.0,
-)
+payload = meta.model_dump()
 res = client.generate_invoice(payload)
 print(res)
 ```
